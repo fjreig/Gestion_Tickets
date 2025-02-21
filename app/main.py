@@ -27,7 +27,6 @@ def post(ticket: New_Ticket):
     valores = ticket.__dict__
     
     ticket = Tickets(
-        id_ticket = 'TK-1002',
         titulo = valores['titulo'],
         descripcion = valores['descripcion'],
         estado = valores['estado'],

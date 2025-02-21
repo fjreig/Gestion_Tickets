@@ -44,8 +44,10 @@ def TicketCard(id, title, description, status, step, department):
                 Div(Strong("Last Updated"),
                     P(Time(datetime.now().strftime('%b %d, %H:%M'))),
                     cls=('space-y-2', TextPresets.muted_sm)),
-                Button("Editar", cls=ButtonT.primary),
-                Button("Borrar", cls=ButtonT.secondary),
+                Div(
+                    Button("Editar", cls=ButtonT.primary),
+                    Button("Borrar", cls=ButtonT.secondary),
+                ),
                 cls='mt-6')),
         cls=CardT.hover)
 

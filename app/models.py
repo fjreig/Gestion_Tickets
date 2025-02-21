@@ -12,7 +12,7 @@ class Tickets(Base):
     id = Column(Integer, primary_key=True, index=True)
     fechacreacion = Column(DateTime, default=datetime.utcnow)
     fechamodificacion = Column(DateTime, default=datetime.utcnow)
-    id_ticket = Column(String, default="ticket1")
+    id_ticket = Column(String)
     titulo = Column(String)
     descripcion = Column(String)
     estado = Column(String)
