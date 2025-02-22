@@ -12,7 +12,6 @@ class Tickets(Base):
     id = Column(Integer, primary_key=True, index=True)
     fechacreacion = Column(DateTime, default=datetime.utcnow)
     fechamodificacion = Column(DateTime, default=datetime.utcnow)
-    id_ticket = Column(String)
     titulo = Column(String)
     descripcion = Column(String)
     estado = Column(String)
@@ -21,17 +20,17 @@ class Tickets(Base):
 
 def get_all_tickets():
     result = session.query(Tickets).with_entities(
-        Tickets.id_ticket.label('id'),
+        Tickets.id.label('id'),
         Tickets.titulo.label('title'),
         Tickets.descripcion.label('description'),
         Tickets.estado.label('status'),
         Tickets.step.label('step'),
         Tickets.departmento.label('department')
-        ).all()
+        ).order_by(Tickets.id).all()
     valores = []
     for i in range(len(result)):
         valores.append({
-            'id': result[i][0], 
+            'id': 'TK-' + "{:03d}".format(result[i][0]), 
             'title': result[i][1],
             'description': result[i][2],
             'status': result[i][3],
@@ -39,3 +38,27 @@ def get_all_tickets():
             'department': result[i][5]
             })
     return(valores)
+
+def new_ticket(valores):
+    ticket = Tickets(
+        titulo = valores['titulo'],
+        descripcion = valores['descripcion'],
+        estado = valores['estado'],
+        departmento = valores['departmento'],
+        ) 
+    session.add(ticket)
+    session.commit()
+
+def update_ticket(valores):
+    ticket = session.query(Tickets).filter(Tickets.id == valores['id']).one()
+    ticket.titulo = valores['titulo']
+    ticket.descripcion = valores['descripcion']
+    ticket.estado = valores['estado']
+    ticket.step = valores['step']
+    ticket.departmento = valores['departmento']
+    session.commit()
+
+def delete_ticket(valores):
+    ticket = session.query(Tickets).filter(Tickets.id == valores['id']).one()
+    session.delete(ticket)
+    session.commit()
