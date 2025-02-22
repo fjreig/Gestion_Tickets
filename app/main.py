@@ -4,14 +4,11 @@ from fasthtml.common import *
 from monsterui.all import *
 from datetime import datetime
 
-from app.tickets import consultar_tickets
+from app.tickets import consultar_tickets, valor_status
 from app.database import  session
 from app.models import new_ticket, update_ticket, delete_ticket
 
-valor_status = {0: "Creado", 1: "Asignado", 2: "En revisión", 3: "En proceso", 4: "Resuelto"}
-
 hdrs = (Theme.blue.headers())
-
 app, rt = fast_app(hdrs=hdrs)
 
 @dataclass
@@ -43,6 +40,7 @@ def post(ticket: New_Ticket):
     valores = ticket.__dict__
     new_ticket(valores)
     #Toast(DivLAligned(UkIcon('check-circle', cls='mr-2'), "Ticket creado correctamente!"), id="success-toast", alert_cls=AlertT.success, cls=(ToastHT.end, ToastVT.bottom)),
+    return Redirect(f"/")
 
 @rt("/update")
 def post(ticket: Update_Ticket):
@@ -51,11 +49,13 @@ def post(ticket: Update_Ticket):
     valores.update(step=list(valor_status.keys())[list(valor_status.values()).index(valores['step'])])
     valores.update(fechamodificacion=datetime.now())
     update_ticket(valores)
+    return Redirect(f"/")
 
 @rt("/borrar")
 def post(ticket: Delete_Ticket):
     valores = ticket.__dict__
     valores.update(id=int(valores['id'].removeprefix('TK-')))
     delete_ticket(valores)
+    return Redirect(f"/")
 
 serve()

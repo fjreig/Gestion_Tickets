@@ -5,6 +5,8 @@ from datetime import datetime
 
 from app.models import get_all_tickets
 
+valor_status = {0: "Creado", 1: "Asignado", 2: "En revisión", 3: "En proceso", 4: "Resuelto"}
+
 app, rt = fast_app(hdrs=Theme.blue.headers(daisy=True))
 
 def TicketSteps(step):
@@ -79,12 +81,12 @@ def UpdateTicketModal(id, title, description, status, step, department):
         ModalHeader(H3(f"Actualizar ticket de Soporte: {id}")),
         ModalBody(
             Form(
-                Grid(LabelInput("ID_Ticket", id="id", placeholder="Breve descripción de la averia", name="id", value=id),
+                Grid(LabelInput("ID_Ticket", id="id", placeholder="Breve descripción de la averia", name="id", value=id, readonly=True),
                     LabelInput("Titulo", id="title", placeholder="Breve descripción de la averia", name="titulo", value=title),
                     LabelSelect(*map(Option,("IT Support", "HR", "Facilities", "Finance")), placeholder="Selecciona un departamento", label="Departamento",  id="department", name="departmento", value=department)),
                 Grid(   
                     LabelSelect(*map(Option,("Baja", "Media", "Alta")), placeholder="Selecciona un nivel de Prioridad", label="Nivel de Prioridad", id="priority", name="estado", value=status),
-                    LabelSelect(*map(Option,("Creado","Asignado","En revisión","En proceso","Resuelto")), placeholder="Estado del Ticket", label="Estado del ticket", id="step", name="step", value=step)),
+                    LabelSelect(*map(Option,("Creado","Asignado","En revisión","En proceso","Resuelto")), placeholder="Estado del Ticket", label="Estado del ticket", id="step", name="step", value=valor_status[step])),
                     LabelTextArea("Descripcion", id="description", placeholder="Descripcion detallada de la averia", name="descripcion", value=description),
                     DivRAligned(
                         #Button("Cancelar", cls=ButtonT.ghost),
@@ -101,7 +103,7 @@ def DeleteTicketModal(id):
             H5("¿Seguro que quieres eliminar este ticket?"),
             Form(
                 Grid(
-                    LabelInput("ID_Ticket", id="id", placeholder="Breve descripción de la averia", name="id", value=id),
+                    LabelInput("ID_Ticket", id="id", placeholder="Breve descripción de la averia", name="id", value=id, readonly=True),
                     DivRAligned(
                         #Button("Cancelar", cls=ButtonT.ghost),
                         Button("Eliminar", cls=ButtonT.primary, data_uk_toggle="target: #success-toast; target: #delete-ticket")
