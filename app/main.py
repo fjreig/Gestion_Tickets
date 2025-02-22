@@ -15,7 +15,7 @@ app, rt = fast_app(hdrs=hdrs)
 class New_Ticket:
     titulo: str
     departmento: str
-    estado: str
+    prioridad: str
     descripcion: str
 
 @dataclass
@@ -23,7 +23,7 @@ class Update_Ticket:
     id: str
     titulo: str
     departmento: str
-    estado: str
+    prioridad: str
     step: str
     descripcion: str
 

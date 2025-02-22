@@ -14,7 +14,7 @@ class Tickets(Base):
     fechamodificacion = Column(DateTime, default=datetime.utcnow)
     titulo = Column(String)
     descripcion = Column(String)
-    estado = Column(String)
+    prioridad = Column(String)
     step = Column(Integer, default=0)
     departmento = Column(String)
 
@@ -23,19 +23,19 @@ def get_all_tickets():
         Tickets.id.label('id'),
         Tickets.titulo.label('title'),
         Tickets.descripcion.label('description'),
-        Tickets.estado.label('status'),
+        Tickets.prioridad.label('prioridad'),
         Tickets.step.label('step'),
         Tickets.departmento.label('department'),
         Tickets.fechacreacion.label('fechacreacion'),
         Tickets.fechamodificacion.label('fechamodificacion')
-        ).order_by(Tickets.id).all()
+        ).order_by(Tickets.id.desc()).all()
     valores = []
     for i in range(len(result)):
         valores.append({
             'id': 'TK-' + "{:03d}".format(result[i][0]), 
             'title': result[i][1],
             'description': result[i][2],
-            'status': result[i][3],
+            'prioridad': result[i][3],
             'step': int(result[i][4]),
             'department': result[i][5],
             'fechacreacion': result[i][6],
@@ -47,7 +47,7 @@ def new_ticket(valores):
     ticket = Tickets(
         titulo = valores['titulo'],
         descripcion = valores['descripcion'],
-        estado = valores['estado'],
+        prioridad = valores['prioridad'],
         departmento = valores['departmento'],
         ) 
     session.add(ticket)
@@ -57,7 +57,7 @@ def update_ticket(valores):
     ticket = session.query(Tickets).filter(Tickets.id == valores['id']).one()
     ticket.titulo = valores['titulo']
     ticket.descripcion = valores['descripcion']
-    ticket.estado = valores['estado']
+    ticket.prioridad = valores['prioridad']
     ticket.step = valores['step']
     ticket.departmento = valores['departmento']
     ticket.fechamodificacion = valores['fechamodificacion']

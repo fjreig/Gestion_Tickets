@@ -1,7 +1,6 @@
 
 from fasthtml.common import *
 from monsterui.all import *
-from datetime import datetime
 
 from app.models import get_all_tickets
 
@@ -26,14 +25,14 @@ def StatusBadge(status):
     alert_type = styles.get(status, AlertT.info)
     return Alert(f"Prioridad {status.title()}", cls=(alert_type,"w-32 shadow-sm"))
 
-def TicketCard(id, title, description, status, step, department, fechacreacion, fechamodificacion):
+def TicketCard(id, title, description, prioridad, step, department, fechacreacion, fechamodificacion):
     return Card(
         CardHeader(
             DivFullySpaced(
                 Div(H3(f"#{id}", cls=TextT.muted, name="id_ticket"), 
                     H4(title), 
                     cls='space-y-2'),
-                StatusBadge(status))),
+                StatusBadge(prioridad))),
         CardBody(
             P(description, cls=(TextT.muted, "mb-6")),
             DividerSplit(cls="my-6"),
@@ -54,7 +53,7 @@ def TicketCard(id, title, description, status, step, department, fechacreacion, 
                     Button("Borrar", cls=ButtonT.secondary, data_uk_toggle="target: #delete-ticket"),
                 ),
                 cls='mt-6'),
-            UpdateTicketModal(id, title, description, status, step, department),
+            UpdateTicketModal(id, title, description, prioridad, step, department),
             DeleteTicketModal(id)),
             Loading(htmx_indicator=True, type=LoadingT.dots, cls="fixed top-0 right-0 m-4"),
         cls=CardT.hover)
@@ -66,7 +65,7 @@ def NewTicketModal():
             Form(
                 Grid(LabelInput("Titulo", id="title", placeholder="Breve descripción de la averia", name="titulo", required=True),
                     LabelSelect(*map(Option,("IT Support", "HR", "Facilities", "Finance")), placeholder="Selecciona un departamento", label="Departamento",  id="department", name="departmento", required=True)),
-                    LabelSelect(*map(Option,("Baja", "Media", "Alta")), placeholder="Selecciona un nivel de Prioridad", label="Nivel de Prioridad", id="priority", name="estado", required=True),
+                    LabelSelect(*map(Option,("Baja", "Media", "Alta")), placeholder="Selecciona un nivel de Prioridad", label="Nivel de Prioridad", id="priority", name="prioridad", required=True),
                     LabelTextArea("Descripcion", id="description", placeholder="Descripcion detallada de la averia", name="descripcion", required=True),
                     DivRAligned(
                         #Button("Cancelar", cls=ButtonT.ghost),
@@ -76,7 +75,7 @@ def NewTicketModal():
             cls='space-y-8')),
         id="new-ticket")
 
-def UpdateTicketModal(id, title, description, status, step, department):
+def UpdateTicketModal(id, title, description, prioridad, step, department):
     return Modal(
         ModalHeader(H3(f"Actualizar ticket de Soporte: {id}")),
         ModalBody(
@@ -85,7 +84,7 @@ def UpdateTicketModal(id, title, description, status, step, department):
                     LabelInput("Titulo", id="title", placeholder="Breve descripción de la averia", name="titulo", value=title),
                     LabelSelect(*map(Option,("IT Support", "HR", "Facilities", "Finance")), placeholder="Selecciona un departamento", label="Departamento",  id="department", name="departmento", value=department)),
                 Grid(   
-                    LabelSelect(*map(Option,("Baja", "Media", "Alta")), placeholder="Selecciona un nivel de Prioridad", label="Nivel de Prioridad", id="priority", name="estado", value=status),
+                    LabelSelect(*map(Option,("Baja", "Media", "Alta")), placeholder="Selecciona un nivel de Prioridad", label="Nivel de Prioridad", id="priority", name="prioridad", value=prioridad),
                     LabelSelect(*map(Option,("Creado","Asignado","En revisión","En proceso","Resuelto")), placeholder="Estado del Ticket", label="Estado del ticket", id="step", name="step", value=valor_status[step])),
                     LabelTextArea("Descripcion", id="description", placeholder="Descripcion detallada de la averia", name="descripcion", value=description),
                     DivRAligned(
