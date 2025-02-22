@@ -60,6 +60,7 @@ def update_ticket(valores):
     ticket.estado = valores['estado']
     ticket.step = valores['step']
     ticket.departmento = valores['departmento']
+    ticket.fechamodificacion = valores['fechamodificacion']
     session.commit()
 
 def delete_ticket(valores):

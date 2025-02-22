@@ -49,8 +49,7 @@ def post(ticket: Update_Ticket):
     valores = ticket.__dict__
     valores.update(id=int(valores['id'].removeprefix('TK-')))
     valores.update(step=list(valor_status.keys())[list(valor_status.values()).index(valores['step'])])
-    valores.update(fechamodificacion=datetime.utcnow)
-    print(valores)
+    valores.update(fechamodificacion=datetime.now())
     update_ticket(valores)
 
 @rt("/borrar")
