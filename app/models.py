@@ -25,7 +25,9 @@ def get_all_tickets():
         Tickets.descripcion.label('description'),
         Tickets.estado.label('status'),
         Tickets.step.label('step'),
-        Tickets.departmento.label('department')
+        Tickets.departmento.label('department'),
+        Tickets.fechacreacion.label('fechacreacion'),
+        Tickets.fechamodificacion.label('fechamodificacion')
         ).order_by(Tickets.id).all()
     valores = []
     for i in range(len(result)):
@@ -35,7 +37,9 @@ def get_all_tickets():
             'description': result[i][2],
             'status': result[i][3],
             'step': int(result[i][4]),
-            'department': result[i][5]
+            'department': result[i][5],
+            'fechacreacion': result[i][6],
+            'fechamodificacion': result[i][7],
             })
     return(valores)
 

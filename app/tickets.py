@@ -9,7 +9,7 @@ app, rt = fast_app(hdrs=Theme.blue.headers(daisy=True))
 
 def TicketSteps(step):
     return Steps(
-        LiStep("Creado", data_content="📝",
+        LiStep("Asignado", data_content="📝",
                cls=StepT.success if step > 0 else StepT.primary if step == 0 else StepT.neutral),
         LiStep("En revisión", data_content="🔎",
                cls=StepT.success if step > 1 else StepT.primary if step == 1 else StepT.neutral),
@@ -24,7 +24,7 @@ def StatusBadge(status):
     alert_type = styles.get(status, AlertT.info)
     return Alert(f"Prioridad {status.title()}", cls=(alert_type,"w-32 shadow-sm"))
 
-def TicketCard(id, title, description, status, step, department):
+def TicketCard(id, title, description, status, step, department, fechacreacion, fechamodificacion):
     return Card(
         CardHeader(
             DivFullySpaced(
@@ -38,11 +38,14 @@ def TicketCard(id, title, description, status, step, department):
             TicketSteps(step),
             DividerSplit(cls="my-6"), 
             DivFullySpaced(
-                Div(Strong("Department"),
+                Div(Strong("Departmento"),
                     P(department),
                     cls=('space-y-3', TextPresets.muted_sm)),
-                Div(Strong("Last Updated"),
-                    P(Time(datetime.now().strftime('%b %d, %H:%M'))),
+                Div(Strong("Fecha Creación"),
+                    P(fechacreacion),
+                    cls=('space-y-2', TextPresets.muted_sm)),
+                Div(Strong("Fecha Actualizacion"),
+                    P(fechamodificacion),
                     cls=('space-y-2', TextPresets.muted_sm)),
                 Div(
                     Button("Editar", cls=ButtonT.primary, data_uk_toggle="target: #update-ticket"),
@@ -59,12 +62,12 @@ def NewTicketModal():
         ModalHeader(H3("Crear nuevo ticket de Soporte")),
         ModalBody(
             Form(
-                Grid(LabelInput("Titulo", id="title", placeholder="Breve descripción de la averia", name="titulo"),
-                    LabelSelect(*map(Option,("IT Support", "HR", "Facilities", "Finance")), placeholder="Selecciona un departamento", label="Departamento",  id="department", name="departmento")),
-                    LabelSelect(*map(Option,("Baja", "Media", "Alta")), placeholder="Selecciona un nivel de Prioridad", label="Nivel de Prioridad", id="priority", name="estado"),
-                    LabelTextArea("Descripcion", id="description", placeholder="Descripcion detallada de la averia", name="descripcion"),
+                Grid(LabelInput("Titulo", id="title", placeholder="Breve descripción de la averia", name="titulo", required=True),
+                    LabelSelect(*map(Option,("IT Support", "HR", "Facilities", "Finance")), placeholder="Selecciona un departamento", label="Departamento",  id="department", name="departmento", required=True)),
+                    LabelSelect(*map(Option,("Baja", "Media", "Alta")), placeholder="Selecciona un nivel de Prioridad", label="Nivel de Prioridad", id="priority", name="estado", required=True),
+                    LabelTextArea("Descripcion", id="description", placeholder="Descripcion detallada de la averia", name="descripcion", required=True),
                     DivRAligned(
-                        Button("Cancelar", cls=ButtonT.ghost, data_uk_toggle="target: #new-ticket"),
+                        #Button("Cancelar", cls=ButtonT.ghost),
                         Button("Crear", cls=ButtonT.primary, data_uk_toggle="target: #success-toast; target: #new-ticket")
                 ),
             hx_post="/register",
@@ -81,10 +84,10 @@ def UpdateTicketModal(id, title, description, status, step, department):
                     LabelSelect(*map(Option,("IT Support", "HR", "Facilities", "Finance")), placeholder="Selecciona un departamento", label="Departamento",  id="department", name="departmento", value=department)),
                 Grid(   
                     LabelSelect(*map(Option,("Baja", "Media", "Alta")), placeholder="Selecciona un nivel de Prioridad", label="Nivel de Prioridad", id="priority", name="estado", value=status),
-                    LabelSelect(*map(Option,("Creado","En revisión","En proceso","Resuelto")), placeholder="Estado del Ticket", label="Estado del ticket", id="step", name="step", value=step)),
+                    LabelSelect(*map(Option,("Creado","Asignado","En revisión","En proceso","Resuelto")), placeholder="Estado del Ticket", label="Estado del ticket", id="step", name="step", value=step)),
                     LabelTextArea("Descripcion", id="description", placeholder="Descripcion detallada de la averia", name="descripcion", value=description),
                     DivRAligned(
-                        Button("Cancelar", cls=ButtonT.ghost, data_uk_toggle="target: #update-ticket"),
+                        #Button("Cancelar", cls=ButtonT.ghost),
                         Button("Actualizar", cls=ButtonT.primary, data_uk_toggle="target: #success-toast; target: #update-ticket")
                 ),
             hx_post="/update",
@@ -100,7 +103,7 @@ def DeleteTicketModal(id):
                 Grid(
                     LabelInput("ID_Ticket", id="id", placeholder="Breve descripción de la averia", name="id", value=id),
                     DivRAligned(
-                        Button("Cancelar", cls=ButtonT.ghost, data_uk_toggle="target: #delete-ticket"),
+                        #Button("Cancelar", cls=ButtonT.ghost),
                         Button("Eliminar", cls=ButtonT.primary, data_uk_toggle="target: #success-toast; target: #delete-ticket")
                 ),),
             hx_post="/borrar",

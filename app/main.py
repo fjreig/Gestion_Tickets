@@ -2,12 +2,13 @@ from fasthtml import FastHTML
 from pathlib import Path
 from fasthtml.common import *
 from monsterui.all import *
+from datetime import datetime
 
 from app.tickets import consultar_tickets
 from app.database import  session
-from app.models import Tickets, new_ticket, update_ticket, delete_ticket
+from app.models import new_ticket, update_ticket, delete_ticket
 
-valor_status = {1: "Creado", 2: "En revisión", 3: "En proceso", 4: "Resuelto"}
+valor_status = {0: "Creado", 1: "Asignado", 2: "En revisión", 3: "En proceso", 4: "Resuelto"}
 
 hdrs = (Theme.blue.headers())
 
@@ -48,6 +49,8 @@ def post(ticket: Update_Ticket):
     valores = ticket.__dict__
     valores.update(id=int(valores['id'].removeprefix('TK-')))
     valores.update(step=list(valor_status.keys())[list(valor_status.values()).index(valores['step'])])
+    valores.update(fechamodificacion=datetime.utcnow)
+    print(valores)
     update_ticket(valores)
 
 @rt("/borrar")
